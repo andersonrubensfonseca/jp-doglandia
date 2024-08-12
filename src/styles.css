@@ -1,0 +1,13 @@
+#imagem{
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    height: 100vh;
+    background-image: url('https://img.freepik.com/fotos-premium/cachorro-fofo-enquanto-levanta-o-pe_1000717-382.jpg');
+}
+/* CSS para manter a proporção das imagens sem deformar */
+.card-img {
+    width: 100%;
+    height: 300px; /* Defina a altura desejada */
+    object-fit: cover; /* Ajusta a imagem para preencher o contêiner sem deformar */
+}
