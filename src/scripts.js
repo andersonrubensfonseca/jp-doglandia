@@ -6,16 +6,34 @@ async function login(event) {
     formData.forEach((value,key)=>{
         data[key] = value
     })
-    if(data.username.toLowerCase().trim() === 'anderson' && data.password.toLowerCase().trim() === '123123'){
+    fetch('http://localhost:3333/login', {
+        method: 'POST', // Método HTTP
+        headers: {
+          'Content-Type': 'application/json', // Tipo de conteúdo
+        },
+        body: JSON.stringify(data), // Dados a serem enviados, convertidos para JSON
+      }).then(response => {
+        if (!response.ok) {
+            const res = JSON.parse(response)
+            form.reset()
+            const toastmessage = document.getElementById('toastmessage');
+            toastmessage.innerHTML = res.message
+            const toast = new bootstrap.Toast(document.getElementById('toastAlert')) 
+            toast.show();
+        }
+        return response.json(); // Converte a resposta para JSON
+      }).then(data => {
+        console.log(data); // Manipula os dados recebidos
         localStorage.setItem('credential',JSON.stringify(data))
         window.location='dash.html'
-    }else{
+      }).catch(error => {
         form.reset()
         const toastmessage = document.getElementById('toastmessage');
         toastmessage.innerHTML = "Credendiais Inválidas"
         const toast = new bootstrap.Toast(document.getElementById('toastAlert')) 
         toast.show();
-    }
+      });
+    
     return false
 }
 
@@ -122,4 +140,52 @@ function filtrarCachorros(event) {
 
     listaAnimais(cachorrosFiltrados);
     return false;
+}
+
+let nomePagina = document.getElementsByTagName('title')[0].innerHTML   
+
+if(nomePagina !== 'Sistema'){
+    const user = JSON.parse(localStorage.getItem('credential'))
+    if(!user){
+        window.location = 'login.html'
+    }
+    const nomeuser = document.getElementById('nomeuser');
+    nomeuser.innerHTML= `Bem vindo(a) ${user.name}`
+}
+
+async function listaUsuarios(params) {
+    fetch('http://localhost:3333/users', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer SEU_TOKEN_AQUI`,
+          'Content-Type': 'application/json',
+        },
+      }).then(response => response.json())
+      .then(data => {
+        console.log(data);
+        // Seleciona o corpo da tabela onde as linhas serão inseridas
+        const tableBody = document.getElementById('user-table-body');
+    
+        // Preenche a tabela com dados
+        data.forEach((user, index) => {
+        const row = document.createElement('tr');
+        
+        // Adiciona as células da linha
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+        `;
+        
+        // Adiciona a linha ao corpo da tabela
+        tableBody.appendChild(row);
+        });
+      })
+      .catch(error => {
+        console.error('There was a problem with your fetch operation:', error);
+      });
+}
+
+if(nomePagina==='Sistema - Usuários'){
+    listaUsuarios()
 }

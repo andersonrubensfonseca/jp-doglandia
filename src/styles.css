@@ -11,3 +11,7 @@
     height: 300px; /* Defina a altura desejada */
     object-fit: cover; /* Ajusta a imagem para preencher o contêiner sem deformar */
 }
+
+#nomeuser{
+    color: #ffffff;
+}
